@@ -74,18 +74,45 @@ Next instance: 2026-11-05 at 08:00 (daily).
 
 ## 🧪 Testing PawPal+
 
+The suite lives in `tests/test_pawpal.py`. It covers marking a task complete, counting tasks on a pet and across an owner, sort order (including that the pet's own list is not rearranged), the daily plan skipping other dates, daily and weekly recurrence, a `once` task not repeating, a second completion not adding an extra copy, overlap warnings, back-to-back tasks that should not warn, the same clock time on a different day, an overlap between two pets reported once, filtering by pet and by status, and leaving an after-hours task off the plan.
+
+`pytest-cov` is not installed, so there is no coverage percentage here. The description above is the set of behaviors the tests actually exercise.
+
+**Confidence level: ★★★★☆ (4/5).** The rules above pass. A bad clock string such as `8pm`, a task that runs past midnight, and a full click-through of the Streamlit page are not in this suite.
+
+Command:
+
 ```bash
-# Run the full test suite:
-pytest
-
-# Run with coverage:
-pytest --cov
+python -m pytest -v
 ```
 
-Sample test output:
+Output from that command:
 
 ```
-# Paste your pytest output here
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.2.0, pluggy-1.7.0 -- /tmp/pawpal-venv/bin/python
+cachedir: .pytest_cache
+rootdir: /workspace
+plugins: anyio-4.16.0
+collecting ... collected 15 items
+
+tests/test_pawpal.py::test_mark_complete_sets_flag PASSED                [  6%]
+tests/test_pawpal.py::test_add_task_increases_count PASSED               [ 13%]
+tests/test_pawpal.py::test_owner_all_tasks_counts_every_pet PASSED       [ 20%]
+tests/test_pawpal.py::test_sort_by_time_orders_earliest_first PASSED     [ 26%]
+tests/test_pawpal.py::test_todays_schedule_is_sorted_and_skips_other_days PASSED [ 33%]
+tests/test_pawpal.py::test_daily_task_spawns_the_next_day PASSED         [ 40%]
+tests/test_pawpal.py::test_weekly_task_spawns_seven_days_later PASSED    [ 46%]
+tests/test_pawpal.py::test_once_task_does_not_repeat PASSED              [ 53%]
+tests/test_pawpal.py::test_completing_twice_does_not_add_another_copy PASSED [ 60%]
+tests/test_pawpal.py::test_overlap_returns_a_warning PASSED              [ 66%]
+tests/test_pawpal.py::test_back_to_back_tasks_do_not_conflict PASSED     [ 73%]
+tests/test_pawpal.py::test_same_clock_time_on_another_day_does_not_conflict PASSED [ 80%]
+tests/test_pawpal.py::test_overlap_across_two_pets_warns_once PASSED     [ 86%]
+tests/test_pawpal.py::test_filter_by_pet_and_by_status PASSED            [ 93%]
+tests/test_pawpal.py::test_task_outside_available_hours_is_left_off_the_plan PASSED [100%]
+
+============================== 15 passed in 0.02s ==============================
 ```
 
 ## 📐 Smarter Scheduling

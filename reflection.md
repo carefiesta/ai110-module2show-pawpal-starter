@@ -65,13 +65,21 @@ A second, related choice: a high-priority task that starts later stays later. `s
 
 **a. What you tested**
 
-- What behaviors did you test?
-- Why were these tests important?
+`tests/test_pawpal.py` checks the behaviors that would silently build a wrong day:
+
+- `mark_complete` flips the flag, and adding a task increases the count, including across two pets.
+- `sort_by_time` orders 18:00, 08:00, 12:30 as walk, meds, dinner, and does not rewrite the pet's list. `todays_schedule` uses that order and drops a task whose `due_date` is a different day.
+- A daily completion creates the next calendar day. A weekly completion creates a task seven days later and keeps duration and priority. A `once` task does not repeat. Completing a daily task a second time does not add a third copy.
+- An overlap returns a warning string. A task that starts at the previous task's end minute does not. The same clock time on another date does not. Two pets overlapping produce one warning, not two.
+- `filter_by_pet` matches a name without caring about case. `filter_by_status` splits open and done. A task after `available_until` stays stored and is left off the plan.
+
+These matter because a sort that follows insertion order, a repeat that forgets the date, or a conflict check that only compares start times would all look fine in a short demo and still be wrong.
 
 **b. Confidence**
 
-- How confident are you that your scheduler works correctly?
-- What edge cases would you test next if you had more time?
+4 out of 5. The cases above pass under `python -m pytest -v` (15 passed). I would next test a clock string that is not `HH:MM`, a duration that crosses midnight, and the Streamlit buttons themselves. The page was exercised with the framework's app test for adding a pet and a task, which is not the same as a person clicking through every control.
+
+> TODO (David): change this confidence note if your own manual checks made you more or less sure.
 
 ---
 
