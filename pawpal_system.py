@@ -1,7 +1,6 @@
 """PawPal+ domain model.
 
-The classes match the UML draft: Task, Pet, Owner, and Scheduler.
-Method bodies are filled in after this skeleton.
+Task, Pet, and Owner store the household. Scheduler builds the daily plan.
 """
 
 from dataclasses import dataclass, field
@@ -18,7 +17,7 @@ class Task:
 
     def mark_complete(self) -> None:
         """Mark this task as done."""
-        pass
+        self.completed = True
 
 
 @dataclass
@@ -32,7 +31,7 @@ class Pet:
 
     def add_task(self, task: Task) -> None:
         """Attach a care task to this pet."""
-        pass
+        self.tasks.append(task)
 
 
 @dataclass
@@ -44,11 +43,15 @@ class Owner:
 
     def add_pet(self, pet: Pet) -> None:
         """Register a pet with this owner."""
-        pass
+        self.pets.append(pet)
 
     def all_tasks(self) -> list:
-        """Return every task across all of this owner's pets."""
-        pass
+        """Return (pet, task) pairs for every task this owner tracks."""
+        pairs = []
+        for pet in self.pets:
+            for task in pet.tasks:
+                pairs.append((pet, task))
+        return pairs
 
 
 class Scheduler:
@@ -59,5 +62,9 @@ class Scheduler:
         self.owner = owner
 
     def todays_schedule(self) -> list:
-        """Return the tasks planned for today."""
-        pass
+        """Return open tasks in the order they were added."""
+        planned = []
+        for pet, task in self.owner.all_tasks():
+            if not task.completed:
+                planned.append((pet, task))
+        return planned
