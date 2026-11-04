@@ -15,7 +15,14 @@ Relationships: one owner cares for many pets, one pet has many tasks, and the sc
 
 **b. Design changes**
 
-No change yet. The file is still the skeleton from the draft diagram. I will update this section if implementation forces a change.
+Yes. The draft task only stored a description, a clock time, a frequency, and a completed flag. That was enough to list a day, and it was not enough to schedule one.
+
+- `duration_mins` was added so a conflict is a span of time. Two tasks that start at different minutes can still overlap.
+- `due_date` was added so a repeat can be a new task on a later calendar day. `timedelta` needs a date, not only `"HH:MM"`.
+- `priority` was added because the scenario asks for it. It is stored and explained. It does not reorder the plan.
+- `Owner.available_from`, `available_until`, and `preferences` were added so the household has a time window and a note. The note is printed. The scheduler does not try to read the sentence and guess a rule from it.
+
+`Scheduler` gained `sort_by_time`, `filter_by_pet`, `filter_by_status`, `check_conflicts`, and `complete_task`. `Task.mark_complete()` still only flips the flag. The scheduler is what appends the next occurrence to the pet. That kept the original "mark complete" behavior and put the planning rules in one place.
 
 ---
 
@@ -23,13 +30,20 @@ No change yet. The file is still the skeleton from the draft diagram. I will upd
 
 **a. Constraints and priorities**
 
-- What constraints does your scheduler consider (for example: time, priority, preferences)?
-- How did you decide which constraints mattered most?
+The scheduler looks at four things:
+
+- **Clock time.** `sort_by_time` orders open tasks by the `"HH:MM"` start. This is the constraint that decides the plan.
+- **Available hours.** `within_available_hours` drops a task from today's plan when its start is outside `Owner.available_from` and `available_until`. The task is still stored. In the CLI demo, Milo's 23:00 check is kept by `filter_by_pet` and left off the 07:00–21:00 plan.
+- **Overlaps.** `check_conflicts` compares `[start, start + duration)` on the same `due_date` across every pet, because one person cannot do two care tasks at once.
+- **Priority and the free-text preference.** Priority is saved on the task and mentioned in `explain`. The preference string is saved on the owner and printed. Neither one moves a task.
+
+Time mattered most because walks, meals, and medication are tied to a clock. If a high-priority dinner sorted ahead of breakfast, the pet would be fed at the wrong time. Priority is a label for the owner, not a reason to ignore the clock.
 
 **b. Tradeoffs**
 
-- Describe one tradeoff your scheduler makes.
-- Why is that tradeoff reasonable for this scenario?
+The scheduler warns about an overlap and leaves both tasks at the times that were entered. It does not search for an empty slot or slide one task later. That is reasonable here: a dose or a meal often cannot move by an hour, and a silent change would hide the clash. The warning (see `conflict_warnings`) is the signal, and the owner decides what to move.
+
+A second, related choice: a high-priority task that starts later stays later. `sort_by_time` does not break ties with priority. The time on the task is treated as a commitment. Priority is still visible so the owner can see which of two overlapping tasks they care about more.
 
 ---
 
