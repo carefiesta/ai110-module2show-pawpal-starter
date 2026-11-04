@@ -51,13 +51,13 @@ A second, related choice: a high-priority task that starts later stays later. `s
 
 **a. How you used AI**
 
-- How did you use AI tools during this project (for example: design brainstorming, debugging, refactoring)?
-- What kinds of prompts or questions were most helpful?
+I used my AI coding assistant for the class diagram, the skeletons in `pawpal_system.py`, and a first pass at the scheduling methods and the pytest file. I checked the result by reading `Scheduler`, running `python main.py`, and running `python -m pytest`. The rule that an overlap only warns, and does not move a task, is the one in `check_conflicts`.
+
+> TODO (David): say which kinds of prompts or assistant features helped you most. Factual hint: the repo was built in phases (diagram and skeletons, core classes and `main.py`, Streamlit session state, sorting and conflicts, pytest, then the README and `diagrams/uml_final.mmd`). A request that stayed inside one phase was easier to check than a request for the whole app.
 
 **b. Judgment and verification**
 
-- Describe one moment where you did not accept an AI suggestion as-is.
-- How did you evaluate or verify what the AI suggested?
+> TODO (David): describe one suggestion you did not take as-is, and how you checked the version you kept. Factual hint: `check_conflicts` returns a warning and leaves both times unchanged. `mark_complete` only sets `completed`. The next date comes from `Task.next_occurrence` (`timedelta` of 1 day or 7 days) and `complete_task` appends that new task to the pet. Say what you compared that with, and that you used pytest plus `python main.py` to check it.
 
 ---
 
@@ -77,7 +77,7 @@ These matter because a sort that follows insertion order, a repeat that forgets 
 
 **b. Confidence**
 
-4 out of 5. The cases above pass under `python -m pytest -v` (15 passed). I would next test a clock string that is not `HH:MM`, a duration that crosses midnight, and the Streamlit buttons themselves. The page was exercised with the framework's app test for adding a pet and a task, which is not the same as a person clicking through every control.
+4 out of 5. The cases above pass under `python -m pytest -v` (15 passed). The Streamlit page was also clicked through: two pets, several tasks, an overlap warning, marking a daily walk complete (the next instance is the next day), a blank pet name rejected, and a later-added 08:00 task sorting above an 08:15 task. Next checks would be a clock string that is not `HH:MM` and a duration that crosses midnight.
 
 > TODO (David): change this confidence note if your own manual checks made you more or less sure.
 
@@ -87,12 +87,14 @@ These matter because a sort that follows insertion order, a repeat that forgets 
 
 **a. What went well**
 
-- What part of this project are you most satisfied with?
+The split between the household (`Owner`, `Pet`, `Task`) and the planning rules on `Scheduler` is the part that stayed easy to test. Sort order, repeats, and overlaps are locked in `tests/test_pawpal.py`, and the Streamlit page calls those same methods instead of keeping a second list of dicts.
+
+> TODO (David): add what you were most satisfied with in your own words.
 
 **b. What you would improve**
 
-- If you had another iteration, what would you improve or redesign?
+I would save the household to a file and load it when the app starts. `st.session_state` keeps the owner for the browser session only. I would also make `sort_by_time` reject a string that is not `HH:MM` instead of raising. The page avoids that with a time picker, and `main.py` only uses valid times.
 
 **c. Key takeaway**
 
-- What is one important thing you learned about designing systems or working with AI on this project?
+> TODO (David): write one thing you learned about designing the system, or about working with an AI assistant while you stayed the lead on the design. Factual hint: `diagrams/uml_draft.mmd` is smaller than `diagrams/uml_final.mmd`. `due_date` and `duration_mins` were added so a repeat and an overlap had data to use, and the final diagram was updated to match the code.

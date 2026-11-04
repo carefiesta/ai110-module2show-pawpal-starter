@@ -152,9 +152,15 @@ class Scheduler:
                 )
         return " ".join(messages)
 
-    def conflict_warnings(self) -> list[str]:
-        """Return one warning for each overlapping pair of open tasks."""
-        open_pairs = [(pet, task) for pet, task in self.owner.all_tasks() if not task.completed]
+    def conflict_warnings(self, on: date | None = None) -> list[str]:
+        """Return one warning per overlapping pair, optionally on a single date."""
+        open_pairs = []
+        for pet, task in self.owner.all_tasks():
+            if task.completed:
+                continue
+            if on is not None and task.due_date != on:
+                continue
+            open_pairs.append((pet, task))
         warnings = []
         for index, (pet_a, task_a) in enumerate(open_pairs):
             for pet_b, task_b in open_pairs[index + 1 :]:

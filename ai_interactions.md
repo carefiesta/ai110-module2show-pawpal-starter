@@ -6,19 +6,19 @@
 
 ## Agent Workflow (SF7)
 
-> Document your experience using an AI agent (e.g., Cursor Agent, Claude, Copilot) to make multi-step changes autonomously.
+> Document your experience using an AI coding assistant to make multi-step changes on your own.
 
 **What task did you give the agent?**
 
-<!-- Describe the goal you asked the agent to accomplish -->
+> TODO (David): describe the task you gave your AI coding assistant. Factual hint: the work in this repo was split into phases — a class diagram and skeletons, core classes plus `main.py` and basic tests, a Streamlit page using `st.session_state`, sorting/filtering/recurrence/conflict warnings, pytest, then the README and `diagrams/uml_final.mmd`.
 
 **What did the agent do?**
 
-<!-- List the steps the agent took (files edited, commands run, etc.) -->
+> TODO (David): list what you saw the assistant change. Factual hint: the files touched for the project are `pawpal_system.py`, `main.py`, `app.py`, `tests/test_pawpal.py`, `diagrams/uml_draft.mmd`, `diagrams/uml.mmd`, `diagrams/uml_final.mmd`, `README.md`, and `reflection.md`. `python -m pytest` was run so the Testing section could quote a real run.
 
 **What did you have to verify or fix manually?**
 
-<!-- Describe anything the agent got wrong or that required human review -->
+> TODO (David): write what you checked or changed yourself. Factual hint: the pytest block in the README is copied from a real `python -m pytest -v` run, and `diagrams/uml_final.mmd` lists the methods that are actually on the classes.
 
 ---
 
@@ -37,4 +37,4 @@
 
 **Which approach did you use in your final implementation and why?**
 
-<!-- Your conclusion -->
+> TODO (David): this stretch was not filled in. If you compared two prompts, write that comparison here. If you did not, say so and leave the table blank.
