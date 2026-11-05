@@ -1,15 +1,53 @@
 classDiagram
-    %% Replace the placeholders below with your actual classes, attributes, methods, and relationships.
-    %% Keep this file updated so it matches your final implementation.
+    %% Matches pawpal_system.py after scheduling was implemented.
+    %% minutes_from_clock and clock_from_minutes are module helpers, not classes.
 
-    class ClassName {
-        +type attribute
-        +method() returnType
+    class Task {
+        +str description
+        +str time
+        +str frequency
+        +bool completed
+        +int duration_mins
+        +str priority
+        +date due_date
+        +mark_complete()
+        +end_minutes() int
+        +overlaps(other) bool
+        +next_occurrence() Task
     }
 
-    class AnotherClass {
-        +type attribute
-        +method() returnType
+    class Pet {
+        +str name
+        +str species
+        +int age
+        +list tasks
+        +add_task(task)
     }
 
-    ClassName --> AnotherClass : relationship
+    class Owner {
+        +str name
+        +list pets
+        +str available_from
+        +str available_until
+        +str preferences
+        +add_pet(pet)
+        +all_tasks() list
+    }
+
+    class Scheduler {
+        +Owner owner
+        +sort_by_time(tasks) list
+        +filter_by_pet(pet_name) list
+        +filter_by_status(completed) list
+        +within_available_hours(task) bool
+        +check_conflicts(new_task) str
+        +conflict_warnings(on) list
+        +complete_task(pet, task) Task
+        +todays_schedule(on) list
+        +explain(task, position) str
+    }
+
+    Owner "1" --> "*" Pet : cares for
+    Pet "1" --> "*" Task : has
+    Scheduler --> Owner : plans for
+    Scheduler ..> Task : creates next occurrence
